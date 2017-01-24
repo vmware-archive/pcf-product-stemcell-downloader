@@ -9,7 +9,7 @@ image_resource:
 
 inputs:
 - name: pcf-product-stemcell-downloader-with-dependencies
-  path: go/src/github.com/pivotalservices/pcf-product-stemcell-downloader
+  path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
 
 params:
   MINIO_ACCESS_KEY:
@@ -25,6 +25,6 @@ run:
 
     go get -u github.com/onsi/ginkgo/ginkgo
 
-    cd go/src/github.com/pivotalservices/pcf-product-stemcell-downloader
+    cd go/src/github.com/c0-ops/pcf-product-stemcell-downloader
       ginkgo -cover -r -race -randomizeAllSpecs
     cd -
