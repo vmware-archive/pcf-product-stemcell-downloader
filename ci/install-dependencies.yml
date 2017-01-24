@@ -1,0 +1,32 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: latest
+
+inputs:
+- name: pcf-product-stemcell-downloader
+  path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
+
+outputs:
+- name: pcf-product-stemcell-downloader-with-dependencies
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    export GOPATH=$PWD/go
+    export PATH=$GOPATH/bin:$PATH
+
+    ROOT=$(cd $(dirname $0) && pwd)
+
+    go get -u github.com/Masterminds/glide
+
+    cd go/src/github.com/c0-ops/pcf-product-stemcell-downloader
+      glide install
+      cp -R . "${ROOT}/pcf-product-stemcell-downloader-with-dependencies"
+    cd -

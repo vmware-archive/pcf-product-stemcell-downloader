@@ -20,7 +20,7 @@ var (
 
 var _ = BeforeSuite(func() {
 	var err error
-	pathToMain, err = gexec.Build("github.com/c0-ops/concourse-tasks-bundle/download-bosh-io-stemcell")
+	pathToMain, err = gexec.Build("github.com/c0-ops/pcf-product-stemcell-downloader")
 	Expect(err).NotTo(HaveOccurred())
 })
 

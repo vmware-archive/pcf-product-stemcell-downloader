@@ -1,0 +1,109 @@
+groups: []
+
+resource_types:
+- name: gcs-resource
+  type: docker-image
+  source:
+    repository: frodenas/gcs-resource
+
+resources:
+- name: pcf-product-stemcell-downloader
+  type: git
+  source:
+    branch: master
+    private_key: {{git-private-key}}
+    uri: git@github.com:c0-ops/pcf-product-stemcell-downloader.git
+    ignore_paths:
+    - ci
+
+- name: github-rc
+  type: github-release
+  source:
+    release: false
+    pre_release: true
+    user: c0-ops
+    repository: pcf-product-stemcell-downloader
+    access_token: {{github-access-token}}
+
+- name: github-release
+  type: github-release
+  source:
+    user: c0-ops
+    repository: pcf-product-stemcell-downloader
+    access_token: {{github-access-token}}
+
+- name: version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:c0-ops/pcf-product-stemcell-downloader.git
+    branch: version
+    file: version
+    private_key: {{git-private-key}}
+
+jobs:
+- name: create-rc
+  serial_groups: [version]
+  plan:
+  - aggregate:
+    - get: pcf-product-stemcell-downloader
+      trigger: true
+    - get: version
+      params: {pre: rc}
+  - task: install-dependencies
+    file: pcf-product-stemcell-downloader/ci/install-dependencies.yml
+  - aggregate:
+    - task: unit
+      file: pcf-product-stemcell-downloader/ci/unit.yml
+    - task: build-linux
+      file: pcf-product-stemcell-downloader/ci/build-linux.yml
+    - task: build-darwin
+      file: pcf-product-stemcell-downloader/ci/build-darwin.yml
+    - task: build-windows
+      file: pcf-product-stemcell-downloader/ci/build-windows.yml
+  - aggregate:
+    - put: version
+      params: {pre: rc}
+    - do:
+      - task: create-release-notes
+        file: pcf-product-stemcell-downloader/ci/create-release-notes.yml
+      - put: github-rc
+        params:
+          name: release-notes/name
+          tag: release-notes/tag
+          globs:
+          - linux-binary/*
+          - darwin-binary/*
+          - windows-binary/*
+
+- name: shipit
+  serial_groups: [version]
+  plan:
+  - aggregate:
+    - get: github-rc
+      passed: [create-rc]
+    - get: version
+      passed: [create-rc]
+      params: {bump: final}
+    - get: pcf-product-stemcell-downloader
+      passed: [create-rc]
+  - aggregate:
+    - put: pcf-product-stemcell-downloader
+      params:
+        repository: pcf-product-stemcell-downloader
+        only_tag: true
+        tag: version/version
+        tag_prefix: v
+    - do:
+      - task: create-release-notes
+        file: pcf-product-stemcell-downloader/ci/create-release-notes.yml
+      - put: github-release
+        params:
+          name: release-notes/name
+          tag: release-notes/tag
+          globs:
+          - github-rc/*
+    - put: version
+      params:
+        bump: minor
+        pre: rc

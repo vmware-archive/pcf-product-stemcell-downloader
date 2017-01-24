@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: golang
+    tag: latest
+
+inputs:
+- name: pcf-product-stemcell-downloader-with-dependencies
+  path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
+- name: version
+
+outputs:
+- name: darwin-binary
+
+params:
+  OUTPUT_PATH: darwin-binary/pcf-product-stemcell-downloader-darwin
+
+run:
+  path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader/ci/build.sh

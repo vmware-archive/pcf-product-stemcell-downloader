@@ -1,9 +1,9 @@
 package content_test
 
 import (
+	"github.com/c0-ops/pcf-product-stemcell-downloader/content"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/c0-ops/concourse-tasks-bundle/download-bosh-io-stemcell/content"
 )
 
 var _ = Describe("BuildRange", func() {

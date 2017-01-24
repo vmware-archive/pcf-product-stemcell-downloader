@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/c0-ops/concourse-tasks-bundle/download-bosh-io-stemcell/content"
+	"github.com/c0-ops/pcf-product-stemcell-downloader/content"
 	"github.com/cheggaaa/pb"
 
 	yaml "gopkg.in/yaml.v2"
