@@ -100,7 +100,7 @@ jobs:
           name: release-notes/name
           tag: release-notes/tag
           globs:
-          - github-rc/*
+          - github-rc/stemcell-downloader*
     - put: version
       params:
         bump: patch
