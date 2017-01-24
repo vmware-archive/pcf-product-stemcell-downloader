@@ -105,5 +105,5 @@ jobs:
           - github-rc/*
     - put: version
       params:
-        bump: minor
+        bump: patch
         pre: rc
