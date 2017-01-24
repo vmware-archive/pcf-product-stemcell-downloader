@@ -8,10 +8,10 @@ image_resource:
     version: latest
 
 inputs:
-  name: version
+- name: version
 
 outputs:
-  name: release-notes
+- name: release-notes
 
 run:
   path: sh
