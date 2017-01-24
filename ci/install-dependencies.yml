@@ -8,11 +8,11 @@ image_resource:
     tag: latest
 
 inputs:
-- name: pcf-product-stemcell-downloader
+- name: stemcell-downloader
   path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
 
 outputs:
-- name: pcf-product-stemcell-downloader-with-dependencies
+- name: stemcell-downloader-with-dependencies
 
 run:
   path: sh
@@ -28,5 +28,5 @@ run:
 
     cd go/src/github.com/c0-ops/pcf-product-stemcell-downloader
       glide install
-      cp -R . "${ROOT}/pcf-product-stemcell-downloader-with-dependencies"
+      cp -R . "${ROOT}/stemcell-downloader-with-dependencies"
     cd -

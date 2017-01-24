@@ -8,7 +8,7 @@ image_resource:
     tag: latest
 
 inputs:
-- name: pcf-product-stemcell-downloader-with-dependencies
+- name: stemcell-downloader-with-dependencies
   path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
 
 params:

@@ -7,7 +7,7 @@ resource_types:
     repository: frodenas/gcs-resource
 
 resources:
-- name: pcf-product-stemcell-downloader
+- name: stemcell-downloader
   type: git
   source:
     branch: master
@@ -46,27 +46,27 @@ jobs:
   serial_groups: [version]
   plan:
   - aggregate:
-    - get: pcf-product-stemcell-downloader
+    - get: stemcell-downloader
       trigger: true
     - get: version
       params: {pre: rc}
   - task: install-dependencies
-    file: pcf-product-stemcell-downloader/ci/install-dependencies.yml
+    file: stemcell-downloader/ci/install-dependencies.yml
   - aggregate:
     - task: unit
-      file: pcf-product-stemcell-downloader/ci/unit.yml
+      file: stemcell-downloader/ci/unit.yml
     - task: build-linux
-      file: pcf-product-stemcell-downloader/ci/build-linux.yml
+      file: stemcell-downloader/ci/build-linux.yml
     - task: build-darwin
-      file: pcf-product-stemcell-downloader/ci/build-darwin.yml
+      file: stemcell-downloader/ci/build-darwin.yml
     - task: build-windows
-      file: pcf-product-stemcell-downloader/ci/build-windows.yml
+      file: stemcell-downloader/ci/build-windows.yml
   - aggregate:
     - put: version
       params: {pre: rc}
     - do:
       - task: create-release-notes
-        file: pcf-product-stemcell-downloader/ci/create-release-notes.yml
+        file: stemcell-downloader/ci/create-release-notes.yml
       - put: github-rc
         params:
           name: release-notes/name
@@ -85,18 +85,18 @@ jobs:
     - get: version
       passed: [create-rc]
       params: {bump: final}
-    - get: pcf-product-stemcell-downloader
+    - get: stemcell-downloader
       passed: [create-rc]
   - aggregate:
-    - put: pcf-product-stemcell-downloader
+    - put: stemcell-downloader
       params:
-        repository: pcf-product-stemcell-downloader
+        repository: stemcell-downloader
         only_tag: true
         tag: version/version
         tag_prefix: v
     - do:
       - task: create-release-notes
-        file: pcf-product-stemcell-downloader/ci/create-release-notes.yml
+        file: stemcell-downloader/ci/create-release-notes.yml
       - put: github-release
         params:
           name: release-notes/name
