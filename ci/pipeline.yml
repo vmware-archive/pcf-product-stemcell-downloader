@@ -50,11 +50,21 @@ resources:
   source:
     url: {{slack-webhook-url}}
 
+- name: glide
+  type: github-release
+  source:
+    user: masterminds
+    repository: glide
+    access_token: {{github-access-token}}
+
 jobs:
 - name: create-rc
   serial_groups: [version]
   plan:
   - aggregate:
+    - get: glide
+      params:
+        globs: ["glide-*-linux-amd64.tar.gz"]
     - get: stemcell-downloader
       trigger: true
     - get: version

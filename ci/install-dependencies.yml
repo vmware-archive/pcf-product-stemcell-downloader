@@ -8,6 +8,7 @@ image_resource:
     tag: latest
 
 inputs:
+- name: glide
 - name: stemcell-downloader
   path: go/src/github.com/c0-ops/pcf-product-stemcell-downloader
 
@@ -24,7 +25,10 @@ run:
 
     ROOT=$(cd $(dirname $0) && pwd)
 
-    go get -u github.com/Masterminds/glide
+    tar --strip-components 1 \
+        -xvf glide/*.tgz \
+        -C $GOPATH/bin \
+        linux-amd64/glide
 
     cd go/src/github.com/c0-ops/pcf-product-stemcell-downloader
       glide install
