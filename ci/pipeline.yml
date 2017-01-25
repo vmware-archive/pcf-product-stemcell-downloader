@@ -6,6 +6,12 @@ resource_types:
   source:
     repository: frodenas/gcs-resource
 
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
 resources:
 - name: stemcell-downloader
   type: git
@@ -39,6 +45,11 @@ resources:
     file: version
     private_key: {{git-private-key}}
 
+- name: slack
+  type: slack-notification
+  source:
+    url: {{slack-webhook-url}}
+
 jobs:
 - name: create-rc
   serial_groups: [version]
@@ -59,6 +70,10 @@ jobs:
       file: stemcell-downloader/ci/build-darwin.yml
     - task: build-windows
       file: stemcell-downloader/ci/build-windows.yml
+    on_failure:
+      put: slack
+      params:
+        text: "$BUILD_PIPELINE_NAME/$BUILD_JOB_NAME failed: http://$ATC_EXTERNAL_URL/builds/$BUILD_ID"
   - aggregate:
     - put: version
       params: {pre: rc}
