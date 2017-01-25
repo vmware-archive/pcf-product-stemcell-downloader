@@ -20,9 +20,6 @@ run:
   args:
   - -exc
   - |
-    export GOPATH=$PWD/go
-    export PATH=$GOPATH/bin:$PATH
-
     ROOT=$(cd $(dirname $0) && pwd)
 
     tar --strip-components 1 \
